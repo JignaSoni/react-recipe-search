@@ -1,0 +1,75 @@
+import React, { Component } from 'react';
+import {recipe} from '../tempDetails';
+
+export default class RecipeDetails extends Component {
+    constructor(props){
+        super(props);
+        this.state={
+            recipe: recipe,
+            url: `https://www.food2fork.com/api/get?key=061fbab64f54f2f1d5f0d562c48ccf71&rId=${this.props.detailId}`
+        }
+    }
+
+   async componentDidMount(){
+
+        try{
+                const data= await fetch(this.state.url);
+                const jsonData = await data.json();
+                this.setState({
+                  recipe: jsonData.recipe
+                });
+               }catch(error){
+                 console.log(error);
+               }   
+    }
+
+
+    render() {
+        const {
+        // f2f_url,
+        image_url,
+        ingredients,
+        publisher,
+        publisher_url,
+        source_url,
+        title  }=this.state.recipe;
+
+        const {handleIndexOfPage} = this.props
+        return (
+            <React.Fragment>
+               <div className="container">
+               <div className="row">
+               <div className="col-10 mx-auto col-md-6 my-3">
+                <button 
+                type="button" 
+                className="btn btn-warning text-capitalize mb-5"
+                onClick={handleIndexOfPage}>back to recipe list</button>
+                <img src={image_url} alt="recipe" className="d-block w-100" />
+                </div>
+               <div className="col-10 mx-auto col-md-6 my-3">
+               <h6 title="text-uppercase">{title}</h6>
+                <h6 className="text-slanted text-warning text-capitalize"> published by {publisher}</h6>
+                <a 
+                href={publisher_url}
+                 className="btn btn-primary text-capitalize mt-2 "
+                 target="_blank"
+                 rel="noopener noreferrer" >publisher webpage</a>
+                <a href={source_url} 
+                className="btn btn-success text-capitalize mt-2 mx-3" 
+                target="_blank"
+                rel="noopener noreferrer" >recipe url</a>
+                <ul className="list-group mt-4">
+                    <h2 className="mt-3 mb-4">Ingredients</h2>
+                    {
+                        ingredients.map((item,index)=>{
+                            return <li key={index} className="list-group-item text-slanted">{item}</li>
+                        })
+                    }
+                </ul>
+                </div>
+               </div>          
+                </div>
+            </React.Fragment>
+            )
+    }
+}
